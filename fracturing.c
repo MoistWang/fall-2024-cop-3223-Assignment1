@@ -9,16 +9,18 @@
 
 #include <stdio.h>  // Input/output header
 #include <math.h>   // Header for math operations used in calculations
-
+#include <stdlib.h> // Header for dynamic allocation
 
 #define PI 3.14159
 
+// Function prototypes
 double calculateDistance();
 double calculatePerimeter();
 double calculateArea();
 double calculateWidth();
 double calculateHeight();
-void outputPoints(double x1, double y1, double x2, double y2);
+double* inputPoints(int size);
+void outputPoints(double* inputs);
 
 int main(int argc, char **argv)
 {
@@ -29,68 +31,97 @@ int main(int argc, char **argv)
     calculateHeight();
 }
 
-void outputPoints(double x1, double y1, double x2, double y2)
+double* inputPoints(int size)     
 {
-    printf("Point #1 entered: x1 = %.3lf; y1 = %.3lf\n", x1, y1);
-    printf("Point #2 entered: x1 = %.3lf; y1 = %.3lf\n", x2, y2);
+    /*  Creates new array for each call. 
+    *   Array size dependant on arguments.
+    *   Returns array to calculating function. Memory is freed at end of calculation function.
+    */
+
+    double* inputs = (double*)malloc(2*size*sizeof(double));
+    for(int i = 0; i < 2*size; i++) scanf("%lf", &inputs[i]);
+    return inputs;
+
+}
+
+void outputPoints(double* inputs)
+{
+    printf("Point #1 entered: x1 = %.5lf; y1 = %.5lf\n", inputs[0], inputs[1]);
+    printf("Point #2 entered: x2 = %.5lf; y2 = %.5lf\n", inputs[2], inputs[3]);
 }
 
 double calculateDistance()
 {
-    double x1, y1, x2, y2;
-    printf("Please input points for the distance calculation: ");
-    scanf("%lf %lf %lf %lf", &x1, &y1, &x2, &y2);
-    outputPoints(x1,y1,x2,y2);
-    double distance = sqrt(pow(x2-x1,2)+pow(y2-y1,2));
-    printf("The distance between the two points is %.3lf\n", distance);
+    
+    /*  Using pythagoras' theorem, we can find distance
+    *   a^2 + b^2 = c^2 
+    *   => c = sqrt( a^2 + b^2 )
+    *   => Distance = sqrt( x^2 + y^2 )
+    *   where x = x2 - x1 and y = y2 - y1
+    */
+    printf("\n\n\nPlease input points for the diameter calculation: ");
+    double* data = inputPoints(2);
+    outputPoints(data);
+    double distance = sqrt(pow(data[2]-data[0],2)+pow(data[3]-data[1],2)); 
+    printf("\nThe distance between the two points is %.5lf", distance);
+    free(data);
     return distance;
 
 }
 
 double calculatePerimeter()
 {
+    //  Perimeter = 2pi*r
+    //  r = diameter/2
+    
+    double diameter = calculateDistance();
+    double radius = diameter/2.0;
+    double perimeter = 2.0 * PI * radius;
 
-    double x1, y1, x2, y2;
-    printf("Please input points for the perimeter calculation: ");
-    scanf("%lf %lf %lf %lf", &x1, &y1, &x2, &y2);
-    outputPoints(x1,y1,x2,y2);
-    double perimeter = 2*fabs(y2-y1) + 2*fabs(x2-x1);
-    printf("The perimeter of the city encompassed by your request is %.3lf\n", perimeter);
+    printf("\nThe perimeter of the city encompassed by your request is %.5lf\n", perimeter);
     return 1.0;
 
 }
 
 double calculateArea()
 {
-    double x1, y1, x2, y2;
-    printf("Please input points for the area calculation: ");
-    scanf("%lf %lf %lf %lf", &x1, &y1, &x2, &y2);
-    outputPoints(x1,y1,x2,y2);
-    double area = fabs((y2-y1)*(x2-x1));
-    printf("The area of the city encompassed by your request is %.3lf\n", area);
+    //  Area = PI*r^2,
+    //  r = diameter/2
+
+    double diameter = calculateDistance();
+    double radius = diameter/2.0;
+    double area = PI*radius*radius;
+
+    printf("\nThe area of the city encompassed by your request is %.5lf\n", area);
     return 1.0;
 
 }
 
 double calculateWidth()
 {
-    double x1, y1, x2, y2;
-    printf("Please input points for the width calculation: ");
-    scanf("%lf %lf %lf %lf", &x1, &y1, &x2, &y2);
-    outputPoints(x1,y1,x2,y2);
-    double width = fabs(x2-x1);
-    printf("The width of the city encompassed by your request is %.3lf\n", width);
+    // Width = x2 - x1
+
+    printf("\nPlease input points for the width calculation: ");
+    double* data = inputPoints(2);
+    outputPoints(data);
+    double width = fabs(data[2]-data[0]);
+    printf("\n\n\nThe width of the city encompassed by your request is %.5lf\n", width);
+    free(data);
     return 1.0;
 }
 
 double calculateHeight()
 {
-    double x1, y1, x2, y2;
-    printf("Please input points for the height calculation: ");
-    scanf("%lf %lf %lf %lf", &x1, &y1, &x2, &y2);
-    outputPoints(x1,y1,x2,y2);
-    double height = fabs(y2-y1);
-    printf("The height of the city encompassed by your request is %.3lf\n", height);
+    // Height = y2 - y1
+
+    printf("\n\n\nPlease input points for the height calculation: ");
+    double* data = inputPoints(2);
+    outputPoints(data);
+    double height = fabs(data[3]-data[1]);
+    printf("\nThe height of the city encompassed by your request is %.5lf\n", height);
+    free(data);
+    return 1.0;
 }
+
 
 
